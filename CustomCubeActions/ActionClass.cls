@@ -2,6 +2,8 @@
 Class CustomCubeActions.ActionClass Extends %DeepSee.KPI [ Language = objectscript ]
 {
 
+Parameter Cube = {..%ClassName()};
+
 XData KPI [ XMLNamespace = "http://www.intersystems.com/deepsee/kpi" ]
 {
 <kpi
@@ -20,7 +22,12 @@ ClassMethod %OnDashboardAction(pAction As %String, pContext As %ZEN.proxyObject)
 /// pActions($I(pActions))=$LB(name,caption)<br/>
 ClassMethod %OnGetActionList(ByRef pActions As %List, pDataSourceName As %String = "") As %Status
 {
-	// TODO: Lookup action list for data source
+	Set tCube="All"
+	If ..#Cube'="ActionClass" {
+		Set tCube=..#Cube
+	}
+	
+	// TODO: Query Actions table and populate pActions with results
 
 	Quit $$$OK
 }
