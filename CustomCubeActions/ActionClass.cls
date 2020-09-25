@@ -14,9 +14,18 @@ xmlns="http://www.intersystems.com/deepsee/kpi"
 
 ClassMethod %OnDashboardAction(pAction As %String, pContext As %ZEN.proxyObject) As %Status
 {
-	// TODO: Lookup class + method for pAction and call it
+	Set tSC=$$$OK
 
-	Quit $$$OK
+	Set tCube=$Piece(pAction,":",1)
+	Set pAction=$Piece(pAction,":",2,*)
+	Set tSQL="SELECT Class,Method FROM CustomCubeActions.Actions WHERE Cubes[? AND Name=?"
+	Set tSQLRS=##class(%SQL.Statement).%ExecDirect(,tSQL,tCube,pAction)
+
+	If tSQLRS.%Next() {
+		Set tSC=$ClassMethod(tSQLRS.Class,tSQLRS.Method,pAction,pContext)
+	}
+
+	Quit tSC
 }
 
 /// pActions($I(pActions))=$LB(name,caption)<br/>
@@ -31,7 +40,7 @@ ClassMethod %OnGetActionList(ByRef pActions As %List, pDataSourceName As %String
 	Set tSQLRS=##class(%SQL.Statement).%ExecDirect(,tSQL,tCube)
 
 	While tSQLRS.%Next() {
-		Set pActions($I(pActions))=$LB(tSQLRS.Name,tSQLRS.Name)
+		Set pActions($I(pActions))=$LB(tCube_":"_tSQLRS.Name,tSQLRS.Name)
 	}
 
 	Quit $$$OK
