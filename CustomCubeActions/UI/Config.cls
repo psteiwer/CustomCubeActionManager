@@ -2,8 +2,6 @@
 Class CustomCubeActions.UI.Config Extends %DeepSee.UI.standardPage [ Language = objectscript ]
 {
 
-Property ChangedActions;
-
 Property ActionCount As %Integer [ InitialExpression = 0 ];
 
 Parameter DOMAIN = "CustomCubeActions";
@@ -80,11 +78,32 @@ Method Save(pName As %String) As %String [ ZenMethod ]
     Set tSC=$$$OK
 	Set tMsg="Actions Saved"
 	
-    Set tPos=1
-    While $Bitfind(..ChangedActions,tPos)'=0 {
-        Set tPos=$Bitfind(..ChangedActions,tPos)
+    Set tContentGroup=..%GetComponentById("contentgroup")
+    For i=1:1:tContentGroup.children.Count() {
+        Set tChanged=tContentGroup.children.GetAt(i).children.GetAt(1).value
+        If tChanged {
+            Set tID=tContentGroup.children.GetAt(i).children.GetAt(2).value
+            Set tName=tContentGroup.children.GetAt(i).children.GetAt(3).value
+            Set tClass=tContentGroup.children.GetAt(i).children.GetAt(4).value
+            Set tMethod=tContentGroup.children.GetAt(i).children.GetAt(5).value
+            
+            If (tName="")||(tClass="")||(tMethod="") {
+                If tID'="" {
+                    Set tSC=##class(CustomCubeActions.Actions).%DeleteId(tID)
+                }
+            } Else {
+                If tID="" {
+                    Set tAction=##class(CustomCubeActions.Actions).%New()
+                } Else {
+                    Set tAction=##class(CustomCubeActions.Actions).%OpenId(tID)
+                }
+                Set tAction.Name=tContentGroup.children.GetAt(i).children.GetAt(3).value
+                Set tAction.Class=tContentGroup.children.GetAt(i).children.GetAt(4).value
+                Set tAction.Method=tContentGroup.children.GetAt(i).children.GetAt(5).value
 
-        //TODO: Find values for tPos and save new/updated Actions object
+                Set tSC=tAction.%Save()
+            }
+        }
 
         Quit:$$$ISERR(tSC)
     }
@@ -102,23 +121,27 @@ Method ActionDisplay(pID = "", pName = "", pClass = "", pMethod = "") As %Status
     Set ..ActionCount=..ActionCount+1
     Set tPane=..%GetComponentById("contentgroup")
     Set tGroup=##class(%ZEN.Component.hgroup).%New()
-    Set tActionNum=##class(%ZEN.Component.hidden).%New()
-    Set tActionNum.value=..ActionCount
-    Set tSC=tGroup.%AddChild(tActionNum)
+    Set tChanged=##class(%ZEN.Component.hidden).%New()
+    Set tChanged.id="Changed"_..ActionCount
+    Set tChanged.value=0
+    Set tSC=tGroup.%AddChild(tChanged)
     Set tID=##class(%ZEN.Component.hidden).%New()
     Set tID.value=pID
     Set tSC=tGroup.%AddChild(tID)
     Set tName=##class(%ZEN.Component.text).%New()
     Set tName.label="Name:"
     Set tName.value=pName
+    Set tName.onchange="zen('Changed"_..ActionCount_"').setValue(1);"
     Set tSC=tGroup.%AddChild(tName)
     Set tClass=##class(%ZEN.Component.text).%New()
     Set tClass.label="Class:"
     Set tClass.value=pClass
+    Set tClass.onchange="zen('Changed"_..ActionCount_"').setValue(1);"
     Set tSC=tGroup.%AddChild(tClass)
     Set tMethod=##class(%ZEN.Component.text).%New()
     Set tMethod.label="Method:"
     Set tMethod.value=pMethod
+    Set tMethod.onchange="zen('Changed"_..ActionCount_"').setValue(1);"
     Set tSC=tGroup.%AddChild(tMethod)
     Set tSC=tPane.%AddChild(tGroup)
 
