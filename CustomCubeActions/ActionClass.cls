@@ -27,7 +27,12 @@ ClassMethod %OnGetActionList(ByRef pActions As %List, pDataSourceName As %String
 		Set tCube=..#Cube
 	}
 	
-	// TODO: Query Actions table and populate pActions with results
+	Set tSQL="SELECT Name,Class,Method FROM CustomCubeActions.Actions WHERE Cubes[?"
+	Set tSQLRS=##class(%SQL.Statement).%ExecDirect(,tSQL,tCube)
+
+	While tSQLRS.%Next() {
+		Set pActions($I(pActions))=$LB(tSQLRS.Name,tSQLRS.Name)
+	}
 
 	Quit $$$OK
 }
