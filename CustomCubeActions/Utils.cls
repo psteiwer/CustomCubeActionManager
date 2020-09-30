@@ -6,7 +6,7 @@ ClassMethod GetCubes(pHasActionClass As %Boolean, pCubeList) As %Status
     Set tSC=$$$OK
 
     Kill pCubeList
-    Set tSC=##class(%DeepSee.Utils).%GetCubeList(.tList)
+    Set tSC=##class(%DeepSee.Utils).%GetCubeList(.tList,,1)
 
     Set tCube=$Order(tList(""))
     While tCube'="" {

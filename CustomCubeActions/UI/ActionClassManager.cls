@@ -56,7 +56,7 @@ Method OnDrawRibbon() As %Status [ Internal ]
 	Quit $$$OK
 }
 
-/// OCnvenience utility for setting the ribbon message
+/// Convenience utility for setting the ribbon message
 ClientMethod setRibbonMessage(message) [ Internal, Language = javascript ]
 {
 	if (message == undefined) {
@@ -67,6 +67,7 @@ ClientMethod setRibbonMessage(message) [ Internal, Language = javascript ]
 
 ClientMethod saveActionClasses() [ Language = javascript ]
 {
+    zenPage.setRibbonMessage("Saving Action Classes...");
     zenPage.setRibbonMessage(this.Save());
 }
 
@@ -82,12 +83,21 @@ Method Save(pName As %String) As %String [ ZenMethod ]
             If tChanged {
                 Set tCube=tContentGroup.children.GetAt(i).children.GetAt(2).label
                 Set tActionClass=tContentGroup.children.GetAt(i).children.GetAt(2).value
+                Set tCubeClass=##class(%DeepSee.Utils).%GetCubeClass(tCube)
 
-                // TODO: Open cube definition and modify action class accordingly
+                Set tModel=##class(%DeepSee.Utils).%GetModel(tCube)
+                Set tModel.actionClass=tActionClass
+
+                Set tSC=##class(%DeepSee.Utils).%SaveCubeDefinition(tCubeClass,,tModel.description,tModel)
+	            Quit:$$$ISERR(tSC)
+                Set tSC=$System.OBJ.Compile(tCubeClass,"fck /displayerror=0 /displaylog=0")
+                Quit:$$$ISERR(tSC)
             }
 
             Quit:$$$ISERR(tSC)
         }
+        
+        Quit:$$$ISERR(tSC)
     }
 	If $$$ISERR(tSC) {
 		Set tMsg=$System.Status.GetErrorText(tSC)
