@@ -1,5 +1,5 @@
 /// Created using the page template: Default
-Class CustomCubeActions.UI.Config Extends %DeepSee.UI.standardPage [ Language = objectscript ]
+Class CustomCubeActions.UI.ActionManager Extends %DeepSee.UI.standardPage [ Language = objectscript ]
 {
 
 Property ActionCount As %Integer [ InitialExpression = 0 ];
@@ -9,7 +9,7 @@ Parameter DOMAIN = "CustomCubeActions";
 Parameter Version = 1;
 
 /// Displayed name of this page.
-Parameter PAGENAME = "CustomCubeActions";
+Parameter PAGENAME = "Action Manager";
 
 /// This Style block contains page-specific CSS style definitions.
 XData Style
@@ -29,7 +29,7 @@ XData contentPane [ XMLNamespace = "http://www.intersystems.com/zen" ]
 /// Get the (localized) name of the page.
 Method %OnGetPageName() As %String [ Internal ]
 {
-	Quit $$$Text("CustomCubeActions","CustomCubeActions")
+	Quit $$$Text("Action Manager","CustomCubeActions")
 }
 
 /// Get information to display in the ribbon bar.
@@ -37,7 +37,7 @@ Method OnGetRibbonInfo(Output pDisplay As %Boolean, Output pViewIcons As %List, 
 {
 	Set pDisplay=1
 	Set pSearchBox=0
-	Set pRibbonTitle=$$$Text("CustomCubeActions")
+	Set pRibbonTitle=$$$Text("Action Manager")
 
 	// commands
 	// $LB(id,caption,help,onclick)
