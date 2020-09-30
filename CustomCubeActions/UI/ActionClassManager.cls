@@ -128,18 +128,33 @@ Method CubeDisplay(pCube = "", pActionClass = "") As %Status [ ZenMethod ]
     Set tCube.onchange="zen('Changed"_..CubeCount_"').setValue(1);"
     Set tSC=tGroup.%AddChild(tCube)
 
+    // If pActionClass is empty or does not contain "CustomCubeActions.ActionClass", display "Generate Action Class" button
+    If (pActionClass="")||(pActionClass'["CustomCubeActions.ActionClass") {
+        // Generate is not fully developed yet
+        Quit
+        Set tButton=##class(%ZEN.Component.button).%New()
+        Set tButton.caption="Generate Action Class"
+        Set tButton.onclick="zenPage.generateClicked('"_pCube_"');"
+        Set tSC=tGroup.%AddChild(tButton)
+    }
+
     // If pActionClass is defined and does not contain "CustomCubeActions.ActionClass", display "unmanaged" warning
     If (pActionClass'="")&&(pActionClass'["CustomCubeActions.ActionClass") {
         // TODO: Add warning message
     }
 
-    // If pActionClass is empty or does not contain "CustomCubeActions.ActionClass", display "Generate Action Class" button
-    If (pActionClass="")||(pActionClass'["CustomCubeActions.ActionClass") {
-        // TODO: Add "Generate Action Class" button
-    }
-
-
     Set tSC=tPane.%AddChild(tGroup)
+
+    Quit tSC
+}
+
+Method GenerateClicked(pCube) As %Status [ ZenMethod ]
+{
+    Set tSC=$$$OK
+
+    // Generate Class
+    // Assign value
+    // Save page
 
     Quit tSC
 }
