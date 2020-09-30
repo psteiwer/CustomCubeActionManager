@@ -130,12 +130,11 @@ Method CubeDisplay(pCube = "", pActionClass = "") As %Status [ ZenMethod ]
 
     // If pActionClass is empty or does not contain "CustomCubeActions.ActionClass", display "Generate Action Class" button
     If (pActionClass="")||(pActionClass'["CustomCubeActions.ActionClass") {
-        // Generate is not fully developed yet
-        Quit
         Set tButton=##class(%ZEN.Component.button).%New()
         Set tButton.caption="Generate Action Class"
         Set tButton.onclick="zenPage.generateClicked('"_pCube_"');"
-        Set tSC=tGroup.%AddChild(tButton)
+        // Generate is not fully developed yet
+        //Set tSC=tGroup.%AddChild(tButton)
     }
 
     // If pActionClass is defined and does not contain "CustomCubeActions.ActionClass", display "unmanaged" warning
