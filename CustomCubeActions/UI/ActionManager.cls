@@ -136,6 +136,7 @@ Method ActionDisplay(pID = "", pName = "", pClass = "", pMethod = "") As %Status
     Set tClass=##class(%ZEN.Component.text).%New()
     Set tClass.label="Class:"
     Set tClass.value=pClass
+    Set tClass.size=30
     Set tClass.onchange="zen('Changed"_..ActionCount_"').setValue(1);"
     Set tSC=tGroup.%AddChild(tClass)
     Set tMethod=##class(%ZEN.Component.text).%New()
@@ -144,6 +145,9 @@ Method ActionDisplay(pID = "", pName = "", pClass = "", pMethod = "") As %Status
     Set tMethod.onchange="zen('Changed"_..ActionCount_"').setValue(1);"
     Set tSC=tGroup.%AddChild(tMethod)
     Set tSC=tPane.%AddChild(tGroup)
+    Set tSpacer=##class(%ZEN.Component.spacer).%New()
+    Set tSpacer.height="10px"
+    Set tSC=tPane.%AddChild(tSpacer)
 
     Quit tSC
 }
