@@ -9,6 +9,44 @@ Property Method As %String;
 
 Property Cubes As list Of %String;
 
+ClassMethod AddAction(pName = "", pClass = "", pMethod = "", pCubes = "") As %Status
+{
+    Set tSC=$$$OK
+
+    Set tAction=##class(CustomCubeActions.Actions).%New()
+    Set tSC=tAction.UpdateAction(pName,pClass,pMethod,pCubes)
+
+    Quit tSC
+}
+
+ClassMethod ModifyAction(pID = "", pName = "", pClass = "", pMethod = "", pCubes = "") As %Status
+{
+    Set tSC=$$$OK
+
+    Set tAction=##class(CustomCubeActions.Actions).%OpenId(pID)
+    Set tSC=tAction.UpdateAction(pName,pClass,pMethod,pCubes)
+
+    Quit tSC
+}
+
+Method UpdateAction(pName = "", pClass = "", pMethod = "", pCubes = "") As %Status
+{
+    Set tSC=$$$OK
+    
+    Set ..Name=pName
+    Set ..Class=pClass
+    Set ..Method=pMethod
+    Set tSC=..Cubes.Clear()
+    Quit:$$$ISERR(tSC) tSC
+    For tCubeCounter=1:1:$Length(pCubes,",") {
+        Set tSC=..Cubes.Insert($Piece(pCubes,",",tCubeCounter))
+        Quit:$$$ISERR(tSC)
+    }
+
+    Set tSC=..%Save()
+    Quit tSC
+}
+
 Storage Default
 {
 <Data name="ActionsDefaultData">

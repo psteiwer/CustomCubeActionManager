@@ -94,30 +94,16 @@ Method Save(pName As %String) As %String [ ZenMethod ]
             If (tName="")||(tClass="")||(tMethod="") {
                 If tID'="" {
                     Set tSC=##class(CustomCubeActions.Actions).%DeleteId(tID)
-                    Quit:$$$ISERR(tSC)
                 }
             } Else {
                 If tID="" {
-                    Set tAction=##class(CustomCubeActions.Actions).%New()
+                    Set tSC=##class(CustomCubeActions.Actions).AddAction(tName,tClass,tMethod,tCubes)
                 } Else {
-                    Set tAction=##class(CustomCubeActions.Actions).%OpenId(tID)
+                    Set tSC=##class(CustomCubeActions.Actions).ModifyAction(tID,tName,tClass,tMethod,tCubes)
                 }
-                Set tAction.Name=tName
-                Set tAction.Class=tClass
-                Set tAction.Method=tMethod
-                Set tSC=tAction.Cubes.Clear()
-                Quit:$$$ISERR(tSC)
-                For tCubeCounter=1:1:$Length(tCubes,",") {
-                    Set tSC=tAction.Cubes.Insert($Piece(tCubes,",",tCubeCounter))
-                    Quit:$$$ISERR(tSC)
-                }
-
-                Set tSC=tAction.%Save()
-                Quit:$$$ISERR(tSC)
             }
             Quit:$$$ISERR(tSC)
         }
-
         Quit:$$$ISERR(tSC)
     }
 	If $$$ISERR(tSC) {
