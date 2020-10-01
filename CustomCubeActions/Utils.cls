@@ -6,7 +6,8 @@ ClassMethod GetCubes(pHasActionClass As %Boolean, pCubeList) As %Status
     Set tSC=$$$OK
 
     Kill pCubeList
-    Set tSC=##class(%DeepSee.Utils).%GetCubeList(.tList,,1)
+    // Can't directly modify subject area (inherited from base cube), only list cubes
+    Set tSC=##class(%DeepSee.Utils).%GetCubeList(.tList,"cubes",1)
 
     Set tCube=$Order(tList(""))
     While tCube'="" {
