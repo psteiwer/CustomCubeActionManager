@@ -139,7 +139,10 @@ Method CubeDisplay(pCube = "", pActionClass = "") As %Status [ ZenMethod ]
 
     // If pActionClass is defined and does not contain "CustomCubeActions.ActionClass", display "unmanaged" warning
     If (pActionClass'="")&&(pActionClass'["CustomCubeActions.ActionClass") {
-        // TODO: Add warning message
+        Set tLabel=##class(%ZEN.Component.label).%New()
+        Set tLabel.value="Not using CustomCubeActions"
+        Set tLabel.controlStyle="color:darkorange"
+        Set tSC=tGroup.%AddChild(tLabel)
     }
 
     Set tSC=tPane.%AddChild(tGroup)
