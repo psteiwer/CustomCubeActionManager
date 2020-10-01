@@ -71,7 +71,7 @@ ClientMethod saveActionClasses() [ Language = javascript ]
     zenPage.setRibbonMessage(this.Save());
 }
 
-Method Save(pName As %String) As %String [ ZenMethod ]
+Method Save() As %String [ ZenMethod ]
 {
     Set tSC=$$$OK
 	Set tMsg="Action Classes Saved"
@@ -114,6 +114,7 @@ Method CubeDisplay(pCube = "", pActionClass = "") As %Status [ ZenMethod ]
     Set tChanged.value=0
     Set tSC=tGroup.%AddChild(tChanged)
     Set tCube=##class(%ZEN.Component.text).%New()
+    Set tCube.id="Cube"_..CubeCount
     Set tCube.label=pCube
     Set tCube.value=pActionClass
     Set tCube.size=50
@@ -124,9 +125,8 @@ Method CubeDisplay(pCube = "", pActionClass = "") As %Status [ ZenMethod ]
     If (pActionClass="")||(pActionClass'["CustomCubeActions.ActionClass") {
         Set tButton=##class(%ZEN.Component.button).%New()
         Set tButton.caption="Generate Action Class"
-        Set tButton.onclick="zenPage.generateClicked('"_pCube_"');"
-        // Generate is not fully developed yet
-        //Set tSC=tGroup.%AddChild(tButton)
+        Set tButton.onclick="zenPage.GenerateClicked('"_pCube_"',"_..CubeCount_");"
+        Set tSC=tGroup.%AddChild(tButton)
     }
 
     // If pActionClass is defined and does not contain "CustomCubeActions.ActionClass", display "unmanaged" warning
@@ -142,13 +142,19 @@ Method CubeDisplay(pCube = "", pActionClass = "") As %Status [ ZenMethod ]
     Quit tSC
 }
 
-Method GenerateClicked(pCube) As %Status [ ZenMethod ]
+Method GenerateClicked(pCube, pCubeNumber) As %Status [ ZenMethod ]
 {
     Set tSC=$$$OK
 
     // Generate Class
+    Set tSC=##class(CustomCubeActions.Utils).GenerateActionClass(pCube)
+
     // Assign value
+    Set ..%GetComponentById("Cube"_pCubeNumber).value="CustomCubeActions.ActionClass."_pCube
+    Set ..%GetComponentById("Changed"_pCubeNumber).value=1
+
     // Save page
+    Set tSC=..Save()
 
     Quit tSC
 }
