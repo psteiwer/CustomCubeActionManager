@@ -43,4 +43,21 @@ ClassMethod GenerateActionClass(pCube As %String = "") As %Status
     Quit tSC
 }
 
+ClassMethod UpdateActionClass(pCube, pActionClass) As %Status
+{
+    Set tSC=$$$OK
+
+    Set tCubeClass=##class(%DeepSee.Utils).%GetCubeClass(pCube)
+
+    Set tModel=##class(%DeepSee.Utils).%GetModel(pCube)
+    Set tModel.actionClass=pActionClass
+
+    Set tSC=##class(%DeepSee.Utils).%SaveCubeDefinition(tCubeClass,,tModel.description,tModel)
+    Quit:$$$ISERR(tSC) tSC
+    Set tSC=$System.OBJ.Compile(tCubeClass,"fck /displayerror=0 /displaylog=0")
+    Quit:$$$ISERR(tSC) tSC
+
+    Quit tSC
+}
+
 }

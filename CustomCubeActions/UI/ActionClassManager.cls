@@ -83,15 +83,7 @@ Method Save(pName As %String) As %String [ ZenMethod ]
             If tChanged {
                 Set tCube=tContentGroup.children.GetAt(i).children.GetAt(2).label
                 Set tActionClass=tContentGroup.children.GetAt(i).children.GetAt(2).value
-                Set tCubeClass=##class(%DeepSee.Utils).%GetCubeClass(tCube)
-
-                Set tModel=##class(%DeepSee.Utils).%GetModel(tCube)
-                Set tModel.actionClass=tActionClass
-
-                Set tSC=##class(%DeepSee.Utils).%SaveCubeDefinition(tCubeClass,,tModel.description,tModel)
-	            Quit:$$$ISERR(tSC)
-                Set tSC=$System.OBJ.Compile(tCubeClass,"fck /displayerror=0 /displaylog=0")
-                Quit:$$$ISERR(tSC)
+                Set tSC=##class(CustomCubeActions.Utils).UpdateActionClass(tCube,tActionClass)
             }
 
             Quit:$$$ISERR(tSC)
