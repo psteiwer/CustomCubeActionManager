@@ -142,7 +142,7 @@ Method ActionDisplay(pID = "", pName = "", pClass = "", pMethod = "", pCubes = "
     Set tID.value=pID
     Set tSC=tGroup.%AddChild(tID)
     Set tName=##class(%ZEN.Component.text).%New()
-    Set tName.label="Name:"
+    Set tName.label="Action Name:"
     Set tName.value=pName
     Set tName.onchange="zen('Changed"_..ActionCount_"').setValue(1);"
     Set tSC=tGroup.%AddChild(tName)
