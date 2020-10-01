@@ -80,16 +80,21 @@ Method Save(pName As %String) As %String [ ZenMethod ]
 	
     Set tContentGroup=..%GetComponentById("contentgroup")
     For i=1:1:tContentGroup.children.Count() {
+        If tContentGroup.children.GetAt(i).%IsA("%ZEN.Component.spacer") {
+            Continue
+        }
         Set tChanged=tContentGroup.children.GetAt(i).children.GetAt(1).value
         If tChanged {
             Set tID=tContentGroup.children.GetAt(i).children.GetAt(2).value
             Set tName=tContentGroup.children.GetAt(i).children.GetAt(3).value
             Set tClass=tContentGroup.children.GetAt(i).children.GetAt(4).value
             Set tMethod=tContentGroup.children.GetAt(i).children.GetAt(5).value
+            Set tCubes=tContentGroup.children.GetAt(i).children.GetAt(6).value
             
             If (tName="")||(tClass="")||(tMethod="") {
                 If tID'="" {
                     Set tSC=##class(CustomCubeActions.Actions).%DeleteId(tID)
+                    Quit:$$$ISERR(tSC)
                 }
             } Else {
                 If tID="" {
@@ -97,12 +102,20 @@ Method Save(pName As %String) As %String [ ZenMethod ]
                 } Else {
                     Set tAction=##class(CustomCubeActions.Actions).%OpenId(tID)
                 }
-                Set tAction.Name=tContentGroup.children.GetAt(i).children.GetAt(3).value
-                Set tAction.Class=tContentGroup.children.GetAt(i).children.GetAt(4).value
-                Set tAction.Method=tContentGroup.children.GetAt(i).children.GetAt(5).value
+                Set tAction.Name=tName
+                Set tAction.Class=tClass
+                Set tAction.Method=tMethod
+                Set tSC=tAction.Cubes.Clear()
+                Quit:$$$ISERR(tSC)
+                For tCubeCounter=1:1:$Length(tCubes,",") {
+                    Set tSC=tAction.Cubes.Insert($Piece(tCubes,",",tCubeCounter))
+                    Quit:$$$ISERR(tSC)
+                }
 
                 Set tSC=tAction.%Save()
+                Quit:$$$ISERR(tSC)
             }
+            Quit:$$$ISERR(tSC)
         }
 
         Quit:$$$ISERR(tSC)
@@ -114,7 +127,7 @@ Method Save(pName As %String) As %String [ ZenMethod ]
 	Quit tMsg
 }
 
-Method ActionDisplay(pID = "", pName = "", pClass = "", pMethod = "") As %Status [ ZenMethod ]
+Method ActionDisplay(pID = "", pName = "", pClass = "", pMethod = "", pCubes = "") As %Status [ ZenMethod ]
 {
     Set tSC=$$$OK
 
@@ -144,6 +157,12 @@ Method ActionDisplay(pID = "", pName = "", pClass = "", pMethod = "") As %Status
     Set tMethod.value=pMethod
     Set tMethod.onchange="zen('Changed"_..ActionCount_"').setValue(1);"
     Set tSC=tGroup.%AddChild(tMethod)
+    Set tCubes=##class(%ZEN.Component.text).%New()
+    Set tCubes.label="Cubes:"
+    Set tCubes.title="Comma separated list of cubes that this action is available for. ""All"" can be used for all cubes."
+    Set tCubes.value=pCubes
+    Set tCubes.onchange="zen('Changed"_..ActionCount_"').setValue(1);"
+    Set tSC=tGroup.%AddChild(tCubes)
     Set tSC=tPane.%AddChild(tGroup)
     Set tSpacer=##class(%ZEN.Component.spacer).%New()
     Set tSpacer.height="10px"
@@ -158,11 +177,11 @@ Method %OnAfterCreatePage() As %Status
 	Set tSC=##super()
 	If $$$ISERR(tSC) Quit tSC
     
-    Set tSQL="SELECT ID,Name,Class,Method FROM CustomCubeActions.Actions"
+    Set tSQL="SELECT ID,Name,Class,Method,Cubes FROM CustomCubeActions.Actions"
     Set tSQLRS=##class(%SQL.Statement).%ExecDirect(,tSQL)
 
     While tSQLRS.%Next() {
-        Set tSC=..ActionDisplay(tSQLRS.ID,tSQLRS.Name,tSQLRS.Class,tSQLRS.Method)
+        Set tSC=..ActionDisplay(tSQLRS.ID,tSQLRS.Name,tSQLRS.Class,tSQLRS.Method,$ListToString(tSQLRS.Cubes))
     }
 	
 	Quit $$$OK
