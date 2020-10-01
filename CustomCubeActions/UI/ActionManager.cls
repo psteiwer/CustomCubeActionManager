@@ -99,7 +99,7 @@ Method Save(pName As %String) As %String [ ZenMethod ]
                 If tID="" {
                     Set tSC=##class(CustomCubeActions.Actions).AddAction(tName,tClass,tMethod,tCubes)
                 } Else {
-                    Set tSC=##class(CustomCubeActions.Actions).ModifyAction(tID,tName,tClass,tMethod,tCubes)
+                    Set tSC=##class(CustomCubeActions.Actions).UpdateAction(tID,tName,tClass,tMethod,tCubes)
                 }
             }
             Quit:$$$ISERR(tSC)

@@ -14,22 +14,22 @@ ClassMethod AddAction(pName = "", pClass = "", pMethod = "", pCubes = "") As %St
     Set tSC=$$$OK
 
     Set tAction=##class(CustomCubeActions.Actions).%New()
-    Set tSC=tAction.UpdateAction(pName,pClass,pMethod,pCubes)
+    Set tSC=tAction.Update(pName,pClass,pMethod,pCubes)
 
     Quit tSC
 }
 
-ClassMethod ModifyAction(pID = "", pName = "", pClass = "", pMethod = "", pCubes = "") As %Status
+ClassMethod UpdateAction(pID = "", pName = "", pClass = "", pMethod = "", pCubes = "") As %Status
 {
     Set tSC=$$$OK
 
     Set tAction=##class(CustomCubeActions.Actions).%OpenId(pID)
-    Set tSC=tAction.UpdateAction(pName,pClass,pMethod,pCubes)
+    Set tSC=tAction.Update(pName,pClass,pMethod,pCubes)
 
     Quit tSC
 }
 
-Method UpdateAction(pName = "", pClass = "", pMethod = "", pCubes = "") As %Status
+Method Update(pName = "", pClass = "", pMethod = "", pCubes = "") As %Status
 {
     Set tSC=$$$OK
     
