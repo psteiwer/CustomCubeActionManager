@@ -2,8 +2,6 @@
 Class CustomCubeActions.ActionClass Extends %DeepSee.KPI [ Language = objectscript ]
 {
 
-Parameter Cube = {..%ClassName()};
-
 XData KPI [ XMLNamespace = "http://www.intersystems.com/deepsee/kpi" ]
 {
 <kpi
@@ -18,7 +16,7 @@ ClassMethod %OnDashboardAction(pAction As %String, pContext As %ZEN.proxyObject)
 
 	Set tCube=$Piece(pAction,":",1)
 	Set pAction=$Piece(pAction,":",2,*)
-	Set tSQL="SELECT Class,Method FROM CustomCubeActions.Actions WHERE Cubes[? AND Name=?"
+	Set tSQL="SELECT Class,Method FROM CustomCubeActions.Actions WHERE $ListFind(Cubes,?)>0 AND Name=?"
 	Set tSQLRS=##class(%SQL.Statement).%ExecDirect(,tSQL,tCube,pAction)
 
 	If tSQLRS.%Next() {
@@ -32,11 +30,12 @@ ClassMethod %OnDashboardAction(pAction As %String, pContext As %ZEN.proxyObject)
 ClassMethod %OnGetActionList(ByRef pActions As %List, pDataSourceName As %String = "") As %Status
 {
 	Set tCube="All"
-	If ..#Cube'="ActionClass" {
-		Set tCube=..#Cube
+	Set tClass=$Piece(..%ClassName(1),".",3,*)
+	If tClass'="" {
+		Set tCube=$Replace(tClass,".","/")
 	}
 	
-	Set tSQL="SELECT Name,Class,Method FROM CustomCubeActions.Actions WHERE Cubes[?"
+	Set tSQL="SELECT Name,Class,Method FROM CustomCubeActions.Actions WHERE $ListFind(Cubes,?)>0"
 	Set tSQLRS=##class(%SQL.Statement).%ExecDirect(,tSQL,tCube)
 
 	While tSQLRS.%Next() {

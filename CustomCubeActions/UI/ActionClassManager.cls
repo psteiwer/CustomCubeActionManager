@@ -146,11 +146,13 @@ Method GenerateClicked(pCube, pCubeNumber) As %Status [ ZenMethod ]
 {
     Set tSC=$$$OK
 
+    Set tActionClass=$Replace(pCube,"/",".")
+
     // Generate Class
-    Set tSC=##class(CustomCubeActions.Utils).GenerateActionClass(pCube)
+    Set tSC=##class(CustomCubeActions.Utils).GenerateActionClass(tActionClass)
 
     // Assign value
-    Set ..%GetComponentById("Cube"_pCubeNumber).value="CustomCubeActions.ActionClass."_pCube
+    Set ..%GetComponentById("Cube"_pCubeNumber).value="CustomCubeActions.ActionClass."_tActionClass
     Set ..%GetComponentById("Changed"_pCubeNumber).value=1
 
     // Save page
