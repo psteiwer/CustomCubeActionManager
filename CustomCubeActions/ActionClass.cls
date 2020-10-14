@@ -29,10 +29,13 @@ ClassMethod %OnDashboardAction(pAction As %String, pContext As %ZEN.proxyObject)
 /// pActions($I(pActions))=$LB(name,caption)<br/>
 ClassMethod %OnGetActionList(ByRef pActions As %List, pDataSourceName As %String = "") As %Status
 {
+	Set tSC=$$$OK
+
 	Set tCube="All"
 	Set tClass=$Piece(..%ClassName(1),".",3,*)
 	If tClass'="" {
 		Set tCube=$Replace(tClass,".","/")
+		Set tSC=##class(CustomCubeActions.ActionClass).%OnGetActionList(.pActions,pDataSourceName)
 	}
 	
 	Set tSQL="SELECT Name,Class,Method FROM CustomCubeActions.Actions WHERE $ListFind(Cubes,?)>0"
@@ -42,7 +45,7 @@ ClassMethod %OnGetActionList(ByRef pActions As %List, pDataSourceName As %String
 		Set pActions($I(pActions))=$LB(tCube_":"_tSQLRS.Name,tSQLRS.Name)
 	}
 
-	Quit $$$OK
+	Quit tSC
 }
 
 }
