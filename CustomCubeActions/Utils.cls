@@ -37,6 +37,10 @@ ClassMethod GenerateActionClass(pCube As %String = "") As %Status
     Set tClass=tTemplate.%ConstructClone()
 	Set tClass.Name="CustomCubeActions.ActionClass."_pCube
 	Set tClass.Super="CustomCubeActions.ActionClass"
+    // Remove methods so they inherit directly and can be updated without regenerating
+    For tMethodCounter=1:1:tClass.Methods.Count() {
+        Do tClass.Methods.RemoveAt(tMethodCounter)
+    }
 	Set tSC=tClass.%Save()
     Quit:$$$ISERR(tSC) tSC
 
