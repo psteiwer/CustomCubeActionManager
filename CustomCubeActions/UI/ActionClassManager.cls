@@ -125,7 +125,7 @@ Method CubeDisplay(pCube = "", pActionClass = "") As %Status [ ZenMethod ]
     If (pActionClass="")||(pActionClass'["CustomCubeActions.ActionClass") {
         Set tButton=##class(%ZEN.Component.button).%New()
         Set tButton.caption="Generate Action Class"
-        Set tButton.onclick="zenPage.GenerateClicked('"_pCube_"',"_..CubeCount_");"
+        Set tButton.onclick="zenPage.GenerateClicked('"_pCube_"',"_..CubeCount_",'"_pActionClass_"');"
         Set tSC=tGroup.%AddChild(tButton)
     }
 
@@ -142,7 +142,7 @@ Method CubeDisplay(pCube = "", pActionClass = "") As %Status [ ZenMethod ]
     Quit tSC
 }
 
-Method GenerateClicked(pCube, pCubeNumber) As %Status [ ZenMethod ]
+Method GenerateClicked(pCube, pCubeNumber, pActionClass = "") As %Status [ ZenMethod ]
 {
     Set tSC=$$$OK
 
@@ -150,6 +150,14 @@ Method GenerateClicked(pCube, pCubeNumber) As %Status [ ZenMethod ]
 
     // Generate Class
     Set tSC=##class(CustomCubeActions.Utils).GenerateActionClass(tActionClass)
+
+    // Populate existing actions if action class is already defined
+    If pActionClass'="" {
+        Do $ClassMethod(pActionClass,"%GetActionList",.pActions)
+        For tActionNum=1:1:pActions {
+            Set tSC=##class(CustomCubeActions.Actions).AddAction($LG(pActions(tActionNum),1),pActionClass,"%OnDashboardAction",pCube)
+        }
+    }
 
     // Assign value
     Set ..%GetComponentById("Cube"_pCubeNumber).value="CustomCubeActions.ActionClass."_tActionClass
