@@ -44,9 +44,15 @@ Method OnGetRibbonInfo(Output pDisplay As %Boolean, Output pViewIcons As %List, 
 
 	// commands
 	// $LB(id,caption,help,onclick)
+    Set pCommands($I(cmdIdx))=$LB("cmdActions",$$$Text("Action Manager"),$$$Text("Navigate to the Action Manager"),"zenPage.changePage('"_..Link("CustomCubeActions.UI.ActionManager.zen")_"');")
 	Set pCommands($I(cmdIdx))=$LB("cmdSave",$$$Text("Save Action Classes"),$$$Text("Save the current state of Action Classes"),"zenPage.saveActionClasses();")
 	
 	Quit $$$OK
+}
+
+ClientMethod changePage(pURL) [ Language = javascript ]
+{
+	document.location = pURL
 }
 
 Method OnDrawRibbon() As %Status [ Internal ]
