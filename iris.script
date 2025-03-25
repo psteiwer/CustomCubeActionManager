@@ -1,0 +1,9 @@
+    zn "%SYS"
+    Do ##class(Security.Users).UnExpireUserPasswords("*")
+
+    zn "USER"
+    do EnableDeepSee^%SYS.cspServer("/csp/user/")
+    
+    ; run installer to load app
+    do $SYSTEM.OBJ.Load("/opt/irisapp/Installer.cls", "ck")
+    set sc = ##class(CustomCubeActions.Installer).RunInstaller("/opt/irisapp") 
