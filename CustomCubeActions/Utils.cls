@@ -1,6 +1,11 @@
 Class CustomCubeActions.Utils
 {
 
+ClassMethod GetVersion() As %String
+{
+    Quit "0.0.1"
+}
+
 ClassMethod GetCubes(pHasActionClass As %Boolean, pCubeList) As %Status
 {
     Set tSC=$$$OK
