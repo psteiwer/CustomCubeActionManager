@@ -7,3 +7,6 @@
     ; run installer to load app
     do $SYSTEM.OBJ.Load("/opt/irisapp/Installer.cls", "ck")
     set sc = ##class(CustomCubeActions.Installer).RunInstaller("/opt/irisapp") 
+
+    ; install samples-bi for cubes to test with
+    zpm "install samples-bi"
